@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import ChoiceButton from "./ChoiceButton";
 import ScoreBoard from "./ScoreBoard";
@@ -7,7 +6,8 @@ import LevelDisplay from "./LevelDisplay";
 import LevelComplete from "./LevelComplete";
 import GameOver from "./GameOver";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { soundEffects } from "@/utils/soundEffects";
 
 type Choice = "rock" | "paper" | "scissors";
 type GameOutcome = "win" | "lose" | "draw";
@@ -44,6 +44,7 @@ const RockPaperScissorsGame = () => {
   const [computerScore, setComputerScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   
   // Level system state
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -56,6 +57,9 @@ const RockPaperScissorsGame = () => {
 
   const handleChoice = (choice: Choice) => {
     if (isPlaying || gameState !== "playing") return;
+    
+    // Play click sound
+    soundEffects.play('click');
     
     setIsPlaying(true);
     setShowResult(false);
@@ -70,11 +74,16 @@ const RockPaperScissorsGame = () => {
         setResult(gameResult);
         setShowResult(true);
         
+        // Play result sound
         if (gameResult === "win") {
+          soundEffects.play('win');
           setPlayerScore(prev => prev + 1);
           setLevelPlayerWins(prev => prev + 1);
         } else if (gameResult === "lose") {
+          soundEffects.play('lose');
           setComputerScore(prev => prev + 1);
+        } else {
+          soundEffects.play('draw');
         }
         
         setIsPlaying(false);
@@ -89,8 +98,10 @@ const RockPaperScissorsGame = () => {
       // Level complete - check if player won enough rounds
       const winsNeeded = getWinsNeeded(currentLevel);
       if (levelPlayerWins >= winsNeeded) {
+        soundEffects.play('levelUp');
         setGameState("level-complete");
       } else {
+        soundEffects.play('gameOver');
         setGameState("game-over");
       }
     } else {
@@ -135,9 +146,25 @@ const RockPaperScissorsGame = () => {
     restartGame();
   };
 
+  const toggleSound = () => {
+    const newState = soundEffects.toggleSound();
+    setSoundEnabled(newState);
+  };
+
   if (gameState === "level-complete") {
     return (
       <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl">
+        <div className="flex justify-between items-center mb-4">
+          <div></div>
+          <Button
+            onClick={toggleSound}
+            variant="outline"
+            size="icon"
+            className="bg-white/20 hover:bg-white/30 border-white/30 text-white hover:text-white"
+          >
+            {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+          </Button>
+        </div>
         <ScoreBoard playerScore={playerScore} computerScore={computerScore} />
         <LevelComplete
           level={currentLevel}
@@ -152,6 +179,17 @@ const RockPaperScissorsGame = () => {
   if (gameState === "game-over") {
     return (
       <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl">
+        <div className="flex justify-between items-center mb-4">
+          <div></div>
+          <Button
+            onClick={toggleSound}
+            variant="outline"
+            size="icon"
+            className="bg-white/20 hover:bg-white/30 border-white/30 text-white hover:text-white"
+          >
+            {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+          </Button>
+        </div>
         <ScoreBoard playerScore={playerScore} computerScore={computerScore} />
         <GameOver
           level={currentLevel}
@@ -166,6 +204,18 @@ const RockPaperScissorsGame = () => {
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl">
+      <div className="flex justify-between items-center mb-4">
+        <div></div>
+        <Button
+          onClick={toggleSound}
+          variant="outline"
+          size="icon"
+          className="bg-white/20 hover:bg-white/30 border-white/30 text-white hover:text-white"
+        >
+          {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+        </Button>
+      </div>
+      
       <ScoreBoard playerScore={playerScore} computerScore={computerScore} />
       
       <LevelDisplay

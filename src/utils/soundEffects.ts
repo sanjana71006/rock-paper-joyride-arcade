@@ -7,10 +7,17 @@ export class SoundEffects {
   constructor() {
     // Create audio elements for each sound effect
     this.sounds = {
-      click: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKePbTvVrZy3nMcysEJn2U2fDQfSOdPwsVXrXs6qhUEQtPou/rwAsiZy7C1vHMfSsFJ3LM7t+QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA'),
+      // Choice-specific sounds
+      rock: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA'),
+      paper: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA'),
+      scissors: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA'),
+      
+      // Result sounds
       win: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA'),
       lose: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA'),
       draw: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA'),
+      
+      // Special event sounds
       levelUp: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA'),
       gameOver: this.createAudio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjqN2e/QfSsEKnLM7+CVQQ0RbLfz6qVTEgxOrNzhtmMcBjuQ1/LKeyAA')
     };

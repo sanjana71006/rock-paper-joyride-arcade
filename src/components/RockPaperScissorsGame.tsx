@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import ChoiceButton from "./ChoiceButton";
 import ScoreBoard from "./ScoreBoard";
@@ -58,8 +59,8 @@ const RockPaperScissorsGame = () => {
   const handleChoice = (choice: Choice) => {
     if (isPlaying || gameState !== "playing") return;
     
-    // Play click sound
-    soundEffects.play('click');
+    // Play choice-specific sound
+    soundEffects.play(choice);
     
     setIsPlaying(true);
     setShowResult(false);

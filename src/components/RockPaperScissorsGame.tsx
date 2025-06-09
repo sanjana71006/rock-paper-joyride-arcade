@@ -3,11 +3,15 @@ import { useState } from "react";
 import ChoiceButton from "./ChoiceButton";
 import ScoreBoard from "./ScoreBoard";
 import GameResult from "./GameResult";
+import LevelDisplay from "./LevelDisplay";
+import LevelComplete from "./LevelComplete";
+import GameOver from "./GameOver";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 
 type Choice = "rock" | "paper" | "scissors";
 type GameOutcome = "win" | "lose" | "draw";
+type GameState = "playing" | "level-complete" | "game-over";
 
 const choices: { id: Choice; emoji: string; name: string }[] = [
   { id: "rock", emoji: "🪨", name: "Rock" },
@@ -40,15 +44,23 @@ const RockPaperScissorsGame = () => {
   const [computerScore, setComputerScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  
+  // Level system state
+  const [currentLevel, setCurrentLevel] = useState(1);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [levelPlayerWins, setLevelPlayerWins] = useState(0);
+  const [gameState, setGameState] = useState<GameState>("playing");
+
+  const getRoundsInLevel = (level: number) => level * 3;
+  const getWinsNeeded = (level: number) => Math.ceil(getRoundsInLevel(level) / 2);
 
   const handleChoice = (choice: Choice) => {
-    if (isPlaying) return;
+    if (isPlaying || gameState !== "playing") return;
     
     setIsPlaying(true);
     setShowResult(false);
     setPlayerChoice(choice);
     
-    // Add suspense with computer "thinking"
     setTimeout(() => {
       const compChoice = getComputerChoice();
       setComputerChoice(compChoice);
@@ -60,6 +72,7 @@ const RockPaperScissorsGame = () => {
         
         if (gameResult === "win") {
           setPlayerScore(prev => prev + 1);
+          setLevelPlayerWins(prev => prev + 1);
         } else if (gameResult === "lose") {
           setComputerScore(prev => prev + 1);
         }
@@ -69,7 +82,46 @@ const RockPaperScissorsGame = () => {
     }, 1000);
   };
 
-  const resetGame = () => {
+  const nextRound = () => {
+    const roundsInLevel = getRoundsInLevel(currentLevel);
+    
+    if (currentRound >= roundsInLevel) {
+      // Level complete - check if player won enough rounds
+      const winsNeeded = getWinsNeeded(currentLevel);
+      if (levelPlayerWins >= winsNeeded) {
+        setGameState("level-complete");
+      } else {
+        setGameState("game-over");
+      }
+    } else {
+      // Continue to next round
+      setCurrentRound(prev => prev + 1);
+    }
+    
+    setPlayerChoice(null);
+    setComputerChoice(null);
+    setResult(null);
+    setShowResult(false);
+    setIsPlaying(false);
+  };
+
+  const nextLevel = () => {
+    setCurrentLevel(prev => prev + 1);
+    setCurrentRound(1);
+    setLevelPlayerWins(0);
+    setGameState("playing");
+    setPlayerChoice(null);
+    setComputerChoice(null);
+    setResult(null);
+    setShowResult(false);
+    setIsPlaying(false);
+  };
+
+  const restartGame = () => {
+    setCurrentLevel(1);
+    setCurrentRound(1);
+    setLevelPlayerWins(0);
+    setGameState("playing");
     setPlayerChoice(null);
     setComputerChoice(null);
     setResult(null);
@@ -79,17 +131,50 @@ const RockPaperScissorsGame = () => {
     setIsPlaying(false);
   };
 
-  const playAgain = () => {
-    setPlayerChoice(null);
-    setComputerChoice(null);
-    setResult(null);
-    setShowResult(false);
-    setIsPlaying(false);
+  const resetGame = () => {
+    restartGame();
   };
+
+  if (gameState === "level-complete") {
+    return (
+      <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl">
+        <ScoreBoard playerScore={playerScore} computerScore={computerScore} />
+        <LevelComplete
+          level={currentLevel}
+          playerWins={levelPlayerWins}
+          totalRounds={getRoundsInLevel(currentLevel)}
+          onNextLevel={nextLevel}
+        />
+      </div>
+    );
+  }
+
+  if (gameState === "game-over") {
+    return (
+      <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl">
+        <ScoreBoard playerScore={playerScore} computerScore={computerScore} />
+        <GameOver
+          level={currentLevel}
+          playerWins={levelPlayerWins}
+          totalRounds={getRoundsInLevel(currentLevel)}
+          winsNeeded={getWinsNeeded(currentLevel)}
+          onRestart={restartGame}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl">
       <ScoreBoard playerScore={playerScore} computerScore={computerScore} />
+      
+      <LevelDisplay
+        currentLevel={currentLevel}
+        roundsInLevel={getRoundsInLevel(currentLevel)}
+        currentRound={currentRound}
+        playerWins={levelPlayerWins}
+        winsNeeded={getWinsNeeded(currentLevel)}
+      />
       
       <div className="grid md:grid-cols-2 gap-8 mb-8">
         {/* Player Section */}
@@ -129,12 +214,12 @@ const RockPaperScissorsGame = () => {
           result={result} 
           playerChoice={playerChoice!}
           computerChoice={computerChoice!}
-          onPlayAgain={playAgain}
+          onPlayAgain={nextRound}
         />
       )}
 
       {/* Choice Buttons */}
-      {!isPlaying && (
+      {!isPlaying && !showResult && (
         <div className="flex flex-wrap justify-center gap-4 mb-6">
           {choices.map((choice) => (
             <ChoiceButton

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 
 type Choice = "rock" | "paper" | "scissors";
-type GameResult = "win" | "lose" | "draw";
+type GameOutcome = "win" | "lose" | "draw";
 
 const choices: { id: Choice; emoji: string; name: string }[] = [
   { id: "rock", emoji: "🪨", name: "Rock" },
@@ -15,7 +15,7 @@ const choices: { id: Choice; emoji: string; name: string }[] = [
   { id: "scissors", emoji: "✂️", name: "Scissors" },
 ];
 
-const getWinner = (player: Choice, computer: Choice): GameResult => {
+const getWinner = (player: Choice, computer: Choice): GameOutcome => {
   if (player === computer) return "draw";
   
   const winConditions = {
@@ -35,7 +35,7 @@ const getComputerChoice = (): Choice => {
 const RockPaperScissorsGame = () => {
   const [playerChoice, setPlayerChoice] = useState<Choice | null>(null);
   const [computerChoice, setComputerChoice] = useState<Choice | null>(null);
-  const [result, setResult] = useState<GameResult | null>(null);
+  const [result, setResult] = useState<GameOutcome | null>(null);
   const [playerScore, setPlayerScore] = useState(0);
   const [computerScore, setComputerScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
